@@ -659,8 +659,187 @@ class HTMLReportGenerator:
             border-left: 4px solid #28a745;
         }
         
-        .test-case.failed {
-            border-left: 4px solid #dc3545;
+        .test-case.vulnerable {
+            border-left: 4px solid #e74c3c;
+            background: #fdf2f2;
+        }
+        
+        .vulnerability-indicator {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .successful-injections {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff5f5;
+            border-radius: 8px;
+            border: 1px solid #feb2b2;
+        }
+        
+        .successful-injections h3 {
+            color: #c53030;
+            margin-bottom: 15px;
+        }
+        
+        .injection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 15px;
+        }
+        
+        .injection-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e74c3c;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .injection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .injection-header h5 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .injection-severity {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+        
+        .injection-severity.high { background: #dc3545; color: white; }
+        .injection-severity.medium { background: #fd7e14; color: white; }
+        .injection-severity.low { background: #28a745; color: white; }
+        
+        .injection-details {
+            font-size: 0.9em;
+        }
+        
+        .injection-explanation,
+        .injection-evidence {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .injection-prompt {
+            margin-top: 10px;
+        }
+        
+        .effective-prompts {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border: 1px solid #ffc107;
+        }
+        
+        .effective-prompts h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+        
+        .prompt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .effective-prompt {
+            display: flex;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffc107;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prompt-number {
+            background: #ffc107;
+            color: #212529;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .prompt-content {
+            flex: 1;
+        }
+        
+        .tester-analysis {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            border: 1px solid #4dabf7;
+        }
+        
+        .tester-analysis h5 {
+            color: #1864ab;
+            margin-bottom: 15px;
+        }
+        
+        .vulnerability-status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .vulnerability-status.detected {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+        }
+        
+        .vulnerability-status.detected h5 {
+            color: #c53030;
+        }
+        
+        .vulnerability-status.safe {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .vulnerability-status.safe h5 {
+            color: #2f855a;
+        }
+        
+        .analysis-details {
+            margin-top: 15px;
+        }
+        
+        .analysis-prompt,
+        .analysis-response {
+            margin-bottom: 15px;
+        }
+        
+        .analysis-prompt-content {
+            background: #fff8e1;
+            border: 1px solid #ffc107;
+        }
+        
+        .analysis-response-content {
+            background: #f0f8ff;
+            border: 1px solid #4dabf7;
         }
         
         .test-case-header {
