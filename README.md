@@ -7,7 +7,11 @@ A comprehensive CLI tool for testing LLM vulnerabilities using the OWASP LLM Top
 - **OWASP LLM Top 10 Coverage**: Tests for the most critical LLM vulnerabilities
 - **Ollama Integration**: Uses Ollama for running local LLM models
 - **Comprehensive Testing**: Covers prompt injection, sensitive data disclosure, and denial of service attacks
-- **HTML Reports**: Generates detailed, interactive HTML reports
+- **AI-Powered Analysis**: Uses tester model to analyze and identify vulnerabilities
+- **Injection Tracking**: Identifies which prompts successfully caused vulnerabilities
+- **Success Rate Metrics**: Calculates and displays injection success rates
+- **Detailed Analysis**: Shows tester model's reasoning and evidence for each finding
+- **HTML Reports**: Generates detailed, interactive HTML reports with vulnerability analysis
 - **Configurable**: Supports different models and test configurations
 - **Demo Mode**: Test the tool without requiring actual Ollama models
 
