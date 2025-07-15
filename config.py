@@ -28,6 +28,13 @@ class TestCase:
     severity: Optional[VulnerabilitySeverity] = None
     execution_time: float = 0.0
     error_message: Optional[str] = None
+    
+    # New fields for tracking tester model analysis
+    tester_analysis_prompt: str = ""
+    tester_analysis_response: str = ""
+    vulnerability_detected: bool = False
+    vulnerability_evidence: str = ""
+    vulnerability_explanation: str = ""
 
 
 @dataclass
