@@ -174,6 +174,16 @@ class HTMLReportGenerator:
         test_cases_html = self._generate_test_cases_html(vuln.test_cases)
         recommendations_html = self._generate_recommendations_html(vuln.recommendations)
         
+        # Generate successful injections section
+        successful_injections_html = ""
+        if vuln.successful_injections:
+            successful_injections_html = self._generate_successful_injections_html(vuln.successful_injections)
+        
+        # Generate most effective prompts section
+        effective_prompts_html = ""
+        if vuln.most_effective_prompts:
+            effective_prompts_html = self._generate_effective_prompts_html(vuln.most_effective_prompts)
+        
         return f"""
         <section class="vulnerability">
             <div class="vulnerability-header">
@@ -199,10 +209,21 @@ class HTMLReportGenerator:
                     <span class="stat-value failed">{vuln.failed_tests}</span>
                 </div>
                 <div class="stat">
+                    <span class="stat-label">Injection Success Rate:</span>
+                    <span class="stat-value injection-rate">{vuln.injection_success_rate:.1f}%</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Successful Injections:</span>
+                    <span class="stat-value injections">{len(vuln.successful_injections)}</span>
+                </div>
+                <div class="stat">
                     <span class="stat-label">Execution Time:</span>
                     <span class="stat-value">{vuln.execution_time:.2f}s</span>
                 </div>
             </div>
+            
+            {successful_injections_html}
+            {effective_prompts_html}
             
             <div class="test-cases">
                 <h3>Test Cases</h3>
