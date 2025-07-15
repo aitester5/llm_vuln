@@ -640,6 +640,8 @@ class HTMLReportGenerator:
         
         .stat-value.passed { color: #28a745; }
         .stat-value.failed { color: #dc3545; }
+        .stat-value.injection-rate { color: #fd7e14; }
+        .stat-value.injections { color: #e74c3c; }
         
         .test-cases h3 {
             color: #2c3e50;
