@@ -283,19 +283,66 @@ class HTMLReportGenerator:
         
         return "\n".join(html_parts)
     
-    def _generate_recommendations_html(self, recommendations) -> str:
-        """Generate HTML for recommendations"""
-        if not recommendations:
+    def _generate_successful_injections_html(self, successful_injections) -> str:
+        """Generate HTML for successful injections"""
+        if not successful_injections:
             return ""
         
-        recommendations_list = "\n".join([f"<li>{rec}</li>" for rec in recommendations])
+        injection_items = []
+        for i, injection in enumerate(successful_injections[:10]):  # Show top 10
+            severity_class = injection.severity.value.lower() if injection.severity else "info"
+            injection_items.append(f"""
+            <div class="injection-item">
+                <div class="injection-header">
+                    <h5>{injection.name}</h5>
+                    <span class="injection-severity {severity_class}">{injection.severity.value if injection.severity else 'INFO'}</span>
+                </div>
+                <div class="injection-details">
+                    <div class="injection-explanation">
+                        <strong>Vulnerability:</strong> {injection.vulnerability_explanation}
+                    </div>
+                    <div class="injection-evidence">
+                        <strong>Evidence:</strong> {injection.vulnerability_evidence}
+                    </div>
+                    <div class="injection-prompt">
+                        <strong>Attack Prompt:</strong>
+                        <pre class="code-block">{self._escape_html(injection.input_prompt[:200])}{'...' if len(injection.input_prompt) > 200 else ''}</pre>
+                    </div>
+                </div>
+            </div>
+            """)
         
         return f"""
-        <div class="recommendations">
-            <h3>🔧 Recommendations</h3>
-            <ul>
-                {recommendations_list}
-            </ul>
+        <div class="successful-injections">
+            <h3>💥 Successful Injections ({len(successful_injections)} found)</h3>
+            <div class="injection-grid">
+                {''.join(injection_items)}
+            </div>
+        </div>
+        """
+    
+    def _generate_effective_prompts_html(self, effective_prompts) -> str:
+        """Generate HTML for most effective prompts"""
+        if not effective_prompts:
+            return ""
+        
+        prompt_items = []
+        for i, prompt in enumerate(effective_prompts, 1):
+            prompt_items.append(f"""
+            <div class="effective-prompt">
+                <div class="prompt-number">{i}</div>
+                <div class="prompt-content">
+                    <pre class="code-block">{self._escape_html(prompt)}</pre>
+                </div>
+            </div>
+            """)
+        
+        return f"""
+        <div class="effective-prompts">
+            <h3>🔥 Most Effective Attack Prompts</h3>
+            <div class="prompt-list">
+                {''.join(prompt_items)}
+            </div>
         </div>
         """
     
