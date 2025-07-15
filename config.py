@@ -50,6 +50,11 @@ class VulnerabilityResult:
     severity: Optional[str] = None
     recommendations: List[str] = field(default_factory=list)
     execution_time: float = 0.0
+    
+    # New fields for tracking successful injections
+    successful_injections: List[TestCase] = field(default_factory=list)
+    injection_success_rate: float = 0.0
+    most_effective_prompts: List[str] = field(default_factory=list)
 
 
 @dataclass
