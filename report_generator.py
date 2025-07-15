@@ -346,6 +346,22 @@ class HTMLReportGenerator:
         </div>
         """
     
+    def _generate_recommendations_html(self, recommendations) -> str:
+        """Generate HTML for recommendations"""
+        if not recommendations:
+            return ""
+        
+        recommendations_list = "\n".join([f"<li>{rec}</li>" for rec in recommendations])
+        
+        return f"""
+        <div class="recommendations">
+            <h3>🔧 Recommendations</h3>
+            <ul>
+                {recommendations_list}
+            </ul>
+        </div>
+        """
+    
     def _generate_footer(self) -> str:
         """Generate report footer"""
         return f"""
