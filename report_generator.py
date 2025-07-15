@@ -240,10 +240,16 @@ class HTMLReportGenerator:
         
         for i, test_case in enumerate(test_cases):
             status_class = "passed" if test_case.passed else "failed"
+            vulnerability_class = "vulnerable" if test_case.vulnerability_detected else ""
             severity_info = f"<span class='test-severity {test_case.severity.value.lower()}'>{test_case.severity.value}</span>" if test_case.severity else ""
             
+            # Show vulnerability indicator
+            vulnerability_indicator = ""
+            if test_case.vulnerability_detected:
+                vulnerability_indicator = f"<span class='vulnerability-indicator'>🚨 VULNERABLE</span>"
+            
             html_parts.append(f"""
-            <div class="test-case {status_class}">
+            <div class="test-case {status_class} {vulnerability_class}">
                 <div class="test-case-header" onclick="toggleTestCase({i})">
                     <h4>{test_case.name}</h4>
                     <div class="test-case-status">
@@ -251,6 +257,7 @@ class HTMLReportGenerator:
                             {'✅ PASS' if test_case.passed else '❌ FAIL'}
                         </span>
                         {severity_info}
+                        {vulnerability_indicator}
                     </div>
                 </div>
                 <div class="test-case-content" id="test-case-{i}">
@@ -271,6 +278,9 @@ class HTMLReportGenerator:
                             <strong>Actual Response:</strong>
                             <pre class="code-block">{self._escape_html(test_case.actual_response)}</pre>
                         </div>
+                        
+                        {self._generate_tester_analysis_html(test_case)}
+                        
                         <div class="test-detail">
                             <strong>Execution Time:</strong>
                             <span>{test_case.execution_time:.2f}s</span>
