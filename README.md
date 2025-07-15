@@ -117,10 +117,14 @@ python llm_pentest.py --help
 The tool generates comprehensive HTML reports with:
 
 - **Executive Summary**: Overall risk assessment and statistics
+- **Injection Success Metrics**: Success rates and effective attack prompts
 - **Vulnerability Details**: Detailed test results for each vulnerability
+- **Tester Model Analysis**: Shows how the tester model analyzed each response
+- **Successful Injections**: Highlights which prompts successfully caused vulnerabilities  
 - **Test Cases**: Individual test case results with inputs/outputs
+- **Evidence & Explanations**: Specific evidence for each vulnerability finding
 - **Recommendations**: Specific recommendations for fixing vulnerabilities
-- **Interactive UI**: Expandable test cases and severity filtering
+- **Interactive UI**: Expandable test cases and vulnerability analysis
 
 ## Model Recommendations
 
