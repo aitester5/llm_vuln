@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Penetration Testing Tool - Architecture</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .architecture-container {
+            position: relative;
+            height: 800px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .layer {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 120px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .layer.user {
+            top: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .layer.cli {
+            top: 160px;
+            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+        }
+
+        .layer.core {
+            top: 300px;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #2d3436;
+        }
+
+        .layer.models {
+            top: 440px;
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+        }
+
+        .layer.output {
+            top: 580px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        }
+
+        .component {
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 0.9em;
+            color: #2c3e50;
+            min-width: 140px;
+        }
+
+        .component h4 {
+            margin: 0 0 8px 0;
+            color: #34495e;
+            font-size: 1em;
+        }
+
+        .component p {
+            margin: 0;
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+
+        /* Position components */
+        .comp-cli { top: 180px; left: 20%; }
+        .comp-config { top: 180px; left: 45%; }
+        .comp-demo { top: 180px; right: 20%; }
+
+        .comp-ollama { top: 320px; left: 10%; }
+        .comp-tests { top: 320px; left: 30%; }
+        .comp-analysis { top: 320px; left: 50%; }
+        .comp-report { top: 320px; right: 10%; }
+
+        .comp-target { top: 460px; left: 25%; }
+        .comp-tester { top: 460px; right: 25%; }
+
+        .comp-html { top: 600px; left: 20%; }
+        .comp-json { top: 600px; right: 20%; }
+
+        .arrow {
+            position: absolute;
+            width: 3px;
+            background: #34495e;
+            border-radius: 2px;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 10px solid #34495e;
+        }
+
+        .arrow.horizontal {
+            height: 3px;
+            width: 60px;
+        }
+
+        .arrow.horizontal::after {
+            bottom: -4px;
+            left: auto;
+            right: -8px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 10px solid #34495e;
+        }
+
+        .data-flow {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .flow-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .flow-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+        }
+
+        .step-text {
+            flex: 1;
+            font-size: 0.9em;
+            color: #34495e;
+        }
+
+        .tech-stack {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .tech-stack h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-category {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tech-category h4 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .tech-item {
+            background: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #2c3e50;
+        }
+
+        .vulnerability-details {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .vulnerability-details h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .vuln-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .vuln-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #e74c3c;
+        }
+
+        .vuln-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .vuln-card .owasp-id {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .test-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .test-list li {
+            background: #ecf0f1;
+            margin-bottom: 5px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #34495e;
+        }
+
+        .test-list li:before {
+            content: '•';
+            color: #3498db;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ LLM Penetration Testing Tool - Architecture</h1>
+        
+        <div class="architecture-container">
+            <!-- Layer backgrounds -->
+            <div class="layer user">
+                <span>👤 User Interface Layer</span>
+            </div>
+            <div class="layer cli">
+                <span>💻 CLI & Configuration Layer</span>
+            </div>
+            <div class="layer core">
+                <span>🔧 Core Processing Layer</span>
+            </div>
+            <div class="layer models">
+                <span>🤖 Model Communication Layer</span>
+            </div>
+            <div class="layer output">
+                <span>📄 Output & Reporting Layer</span>
+            </div>
+
+            <!-- Components -->
+            <div class="component comp-cli">
+                <h4>CLI Interface</h4>
+                <p>Command-line interface with typer framework</p>
+            </div>
+            <div class="component comp-config">
+                <h4>Configuration</h4>
+                <p>Model selection, test parameters, output settings</p>
+            </div>
+            <div class="component comp-demo">
+                <h4>Demo Mode</h4>
+                <p>Mock client for testing without Ollama</p>
+            </div>
+
+            <div class="component comp-ollama">
+                <h4>Ollama Client</h4>
+                <p>Async HTTP client for Ollama API</p>
+            </div>
+            <div class="component comp-tests">
+                <h4>Test Engine</h4>
+                <p>Vulnerability test execution</p>
+            </div>
+            <div class="component comp-analysis">
+                <h4>AI Analysis</h4>
+                <p>Response evaluation using tester model</p>
+            </div>
+            <div class="component comp-report">
+                <h4>Report Generator</h4>
+                <p>HTML report creation with findings</p>
+            </div>
+
+            <div class="component comp-target">
+                <h4>Target Model</h4>
+                <p>Model being tested (e.g., llama3.1:latest)</p>
+            </div>
+            <div class="component comp-tester">
+                <h4>Tester Model</h4>
+                <p>Model for analysis (e.g., llama2-uncensored)</p>
+            </div>
+
+            <div class="component comp-html">
+                <h4>HTML Report</h4>
+                <p>Interactive vulnerability dashboard</p>
+            </div>
+            <div class="component comp-json">
+                <h4>JSON Data</h4>
+                <p>Structured test results and metadata</p>
+            </div>
+
+            <!-- Arrows -->
+            <div class="arrow" style="top: 140px; left: 28%; height: 40px;"></div>
+            <div class="arrow" style="top: 140px; left: 52%; height: 40px;"></div>
+            <div class="arrow" style="top: 140px; right: 28%; height: 40px;"></div>
+            
+            <div class="arrow" style="top: 280px; left: 18%; height: 40px;"></div>
+            <div class="arrow" style="top: 280px; left: 38%; height: 40px;"></div>
+            <div class="arrow" style="top: 280px; left: 58%; height: 40px;"></div>
+            <div class="arrow" style="top: 280px; right: 18%; height: 40px;"></div>
+            
+            <div class="arrow" style="top: 420px; left: 33%; height: 40px;"></div>
+            <div class="arrow" style="top: 420px; right: 33%; height: 40px;"></div>
+            
+            <div class="arrow" style="top: 560px; left: 28%; height: 40px;"></div>
+            <div class="arrow" style="top: 560px; right: 28%; height: 40px;"></div>
+        </div>
+
+        <div class="data-flow">
+            <div class="flow-section">
+                <h3>🔄 Request Flow</h3>
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">User initiates scan via CLI</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Configuration validation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Model availability check</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Test case generation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-text">Prompt execution</div>
+                </div>
+            </div>
+
+            <div class="flow-section">
+                <h3>🔍 Analysis Flow</h3>
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Target model response</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Tester model analysis</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Vulnerability detection</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Severity assessment</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-text">Evidence collection</div>
+                </div>
+            </div>
+
+            <div class="flow-section">
+                <h3>📊 Reporting Flow</h3>
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Results aggregation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Severity calculation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Recommendation generation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">HTML report creation</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-text">Interactive dashboard</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h2>🛠️ Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h4>Core Framework</h4>
+                    <div class="tech-item">Python 3.11+</div>
+                    <div class="tech-item">Typer CLI Framework</div>
+                    <div class="tech-item">AsyncIO for concurrency</div>
+                    <div class="tech-item">Pydantic for data validation</div>
+                </div>
+                <div class="tech-category">
+                    <h4>LLM Integration</h4>
+                    <div class="tech-item">Ollama API Client</div>
+                    <div class="tech-item">aiohttp for async HTTP</div>
+                    <div class="tech-item">JSON response parsing</div>
+                    <div class="tech-item">Model management</div>
+                </div>
+                <div class="tech-category">
+                    <h4>Testing Framework</h4>
+                    <div class="tech-item">Modular test design</div>
+                    <div class="tech-item">OWASP LLM Top 10</div>
+                    <div class="tech-item">Concurrent execution</div>
+                    <div class="tech-item">Error handling & retries</div>
+                </div>
+                <div class="tech-category">
+                    <h4>Reporting</h4>
+                    <div class="tech-item">HTML5 + CSS3</div>
+                    <div class="tech-item">JavaScript interactivity</div>
+                    <div class="tech-item">Responsive design</div>
+                    <div class="tech-item">Professional styling</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vulnerability-details">
+            <h2>🎯 Vulnerability Test Details</h2>
+            <div class="vuln-grid">
+                <div class="vuln-card">
+                    <div class="owasp-id">LLM01</div>
+                    <h4>Prompt Injection</h4>
+                    <p><strong>21 Test Cases</strong></p>
+                    <ul class="test-list">
+                        <li>Role override attempts</li>
+                        <li>System prompt leakage</li>
+                        <li>Jailbreak techniques (DAN)</li>
+                        <li>Context manipulation</li>
+                        <li>Instruction hierarchy bypass</li>
+                        <li>Emotional manipulation</li>
+                    </ul>
+                </div>
+                <div class="vuln-card">
+                    <div class="owasp-id">LLM06</div>
+                    <h4>Sensitive Information Disclosure</h4>
+                    <p><strong>41 Test Cases</strong></p>
+                    <ul class="test-list">
+                        <li>Training data extraction</li>
+                        <li>System information disclosure</li>
+                        <li>API key extraction</li>
+                        <li>Personal information probing</li>
+                        <li>Internal process disclosure</li>
+                        <li>Memory/context probing</li>
+                    </ul>
+                </div>
+                <div class="vuln-card">
+                    <div class="owasp-id">LLM04</div>
+                    <h4>Model Denial of Service</h4>
+                    <p><strong>31 Test Cases</strong></p>
+                    <ul class="test-list">
+                        <li>Token exhaustion attacks</li>
+                        <li>Complex reasoning tasks</li>
+                        <li>Infinite/recursive requests</li>
+                        <li>Memory exhaustion</li>
+                        <li>Rapid request simulation</li>
+                        <li>Repetitive task exhaustion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
