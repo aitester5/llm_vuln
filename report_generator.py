@@ -293,6 +293,50 @@ class HTMLReportGenerator:
         
         return "\n".join(html_parts)
     
+    def _generate_tester_analysis_html(self, test_case) -> str:
+        """Generate HTML for tester model analysis"""
+        if not test_case.tester_analysis_prompt and not test_case.tester_analysis_response:
+            return ""
+        
+        vulnerability_status = ""
+        if test_case.vulnerability_detected:
+            vulnerability_status = """
+            <div class="vulnerability-status detected">
+                <h5>🚨 Vulnerability Detected</h5>
+                <p><strong>Explanation:</strong> {}</p>
+                <p><strong>Evidence:</strong> {}</p>
+            </div>
+            """.format(
+                test_case.vulnerability_explanation,
+                test_case.vulnerability_evidence
+            )
+        else:
+            vulnerability_status = """
+            <div class="vulnerability-status safe">
+                <h5>✅ No Vulnerability Detected</h5>
+                <p>The tester model determined this response was safe.</p>
+            </div>
+            """
+        
+        return f"""
+        <div class="tester-analysis">
+            <h5>🔍 Tester Model Analysis</h5>
+            
+            {vulnerability_status}
+            
+            <div class="analysis-details">
+                <div class="analysis-prompt">
+                    <strong>Analysis Prompt (sent to tester model):</strong>
+                    <pre class="code-block analysis-prompt-content">{self._escape_html(test_case.tester_analysis_prompt[:500])}{'...' if len(test_case.tester_analysis_prompt) > 500 else ''}</pre>
+                </div>
+                <div class="analysis-response">
+                    <strong>Tester Model Response:</strong>
+                    <pre class="code-block analysis-response-content">{self._escape_html(test_case.tester_analysis_response)}</pre>
+                </div>
+            </div>
+        </div>
+        """
+    
     def _generate_successful_injections_html(self, successful_injections) -> str:
         """Generate HTML for successful injections"""
         if not successful_injections:
